@@ -16,10 +16,20 @@ def create_app(config_class=Config):
     # ---- Extensions ----
     db.init_app(app)
     jwt.init_app(app)
+
+    # ---- CORS ----
     cors.init_app(
         app,
-        resources={r"/api/*": {"origins": app.config["FRONTEND_ORIGIN"]}},
+        resources={
+            r"/*": {
+                "origins": [
+                    "https://grievance-hruf.vercel.app"
+                ]
+            }
+        },
         supports_credentials=True,
+        methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type", "Authorization"],
     )
 
     # ---- Blueprints ----
@@ -37,10 +47,11 @@ def create_app(config_class=Config):
     app.register_blueprint(admin_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(notifications_bp)
+
     for bp in ALL_ROLE_BLUEPRINTS:
         app.register_blueprint(bp)
 
-    # ---- JWT error handlers (consistent JSON) ----
+    # ---- JWT error handlers ----
     @jwt.unauthorized_loader
     def unauthorized_callback(reason):
         return error("Authentication token is missing.", 401)
@@ -51,39 +62,64 @@ def create_app(config_class=Config):
 
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
-        return error("Authentication token has expired. Please log in again.", 401)
+        return error(
+            "Authentication token has expired. Please log in again.",
+            401
+        )
 
     @jwt.revoked_token_loader
     def revoked_token_callback(jwt_header, jwt_payload):
-        return error("Authentication token has been revoked.", 401)
+        return error(
+            "Authentication token has been revoked.",
+            401
+        )
 
     # ---- General error handlers ----
     @app.errorhandler(404)
     def not_found(e):
-        return error("The requested resource was not found.", 404)
+        return error(
+            "The requested resource was not found.",
+            404
+        )
 
     @app.errorhandler(405)
     def method_not_allowed(e):
-        return error("Method not allowed for this endpoint.", 405)
+        return error(
+            "Method not allowed for this endpoint.",
+            405
+        )
 
     @app.errorhandler(413)
     def too_large(e):
-        return error("Uploaded file is too large.", 413)
+        return error(
+            "Uploaded file is too large.",
+            413
+        )
 
     @app.errorhandler(SQLAlchemyError)
     def handle_db_error(e):
         db.session.rollback()
         app.logger.exception("Database error")
-        return error("A database error occurred. Please try again later.", 500)
+        return error(
+            "A database error occurred. Please try again later.",
+            500
+        )
 
     @app.errorhandler(Exception)
     def handle_unexpected_error(e):
         db.session.rollback()
         app.logger.exception("Unexpected error")
-        return error("An unexpected server error occurred.", 500)
+        return error(
+            "An unexpected server error occurred.",
+            500
+        )
 
+    # ---- Health check ----
     @app.get("/api/health")
     def health():
-        return {"status": "ok", "service": "grievance-management-backend"}
+        return {
+            "status": "ok",
+            "service": "grievance-management-backend"
+        }
 
     return app

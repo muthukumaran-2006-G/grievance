@@ -1,20 +1,31 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://grievance-ohl4.onrender.com";
+// Render Flask backend
+const API_BASE_URL = "https://grievance-ohl4.onrender.com/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-// Attach the access token to every request.
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+// Attach access token to every request
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
 let isRefreshing = false;
 let pendingQueue = [];
@@ -24,25 +35,41 @@ function resolvePending(token) {
   pendingQueue = [];
 }
 
-// On a 401, try a single silent refresh using the refresh token, then retry.
+function rejectPending(error) {
+  pendingQueue.forEach(({ reject }) => reject(error));
+  pendingQueue = [];
+}
+
+// Handle 401 and refresh access token
 api.interceptors.response.use(
   (response) => response,
+
   async (err) => {
     const originalRequest = err.config;
     const status = err.response?.status;
 
-    if (status === 401 && !originalRequest._retry && originalRequest.url !== "/auth/login") {
+    // Don't refresh the token for login or refresh requests
+    if (
+      status === 401 &&
+      !originalRequest?._retry &&
+      originalRequest?.url !== "/auth/login" &&
+      originalRequest?.url !== "/auth/refresh"
+    ) {
       const refreshToken = localStorage.getItem("refresh_token");
+
       if (!refreshToken) {
         clearSession();
         return Promise.reject(err);
       }
 
+      // If another request is already refreshing, wait for it
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           pendingQueue.push({ resolve, reject });
         }).then((token) => {
+          originalRequest.headers = originalRequest.headers || {};
           originalRequest.headers.Authorization = `Bearer ${token}`;
+
           return api(originalRequest);
         });
       }
@@ -54,15 +81,27 @@ api.interceptors.response.use(
         const refreshResponse = await axios.post(
           `${API_BASE_URL}/auth/refresh`,
           {},
-          { headers: { Authorization: `Bearer ${refreshToken}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          }
         );
+
         const newToken = refreshResponse.data.data.access_token;
+
         localStorage.setItem("access_token", newToken);
+
         resolvePending(newToken);
+
+        originalRequest.headers = originalRequest.headers || {};
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
+
         return api(originalRequest);
       } catch (refreshErr) {
+        rejectPending(refreshErr);
         clearSession();
+
         return Promise.reject(refreshErr);
       } finally {
         isRefreshing = false;
@@ -77,6 +116,7 @@ function clearSession() {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
   localStorage.removeItem("user");
+
   if (window.location.pathname !== "/login") {
     window.location.href = "/login";
   }

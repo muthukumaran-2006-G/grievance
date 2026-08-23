@@ -1,6 +1,21 @@
 from app import create_app
+from flask_cors import CORS
 
 app = create_app()
 
+# Allow your Vercel frontend to access the Render backend
+CORS(
+    app,
+    resources={
+        r"/*": {
+            "origins": "https://grievance-hruf.vercel.app"
+        }
+    }
+)
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=app.config.get("DEBUG", False))
+    app.run(
+        host="0.0.0.0",
+        port=5000,
+        debug=app.config.get("DEBUG", False)
+    )

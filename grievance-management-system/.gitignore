@@ -1,0 +1,27 @@
+# ---- Environment / secrets ----
+.env
+*.env
+!.env.example
+
+# ---- Python / Flask backend ----
+backend/venv/
+backend/env/
+backend/__pycache__/
+backend/**/__pycache__/
+*.pyc
+backend/instance/
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ---- Node / React frontend ----
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

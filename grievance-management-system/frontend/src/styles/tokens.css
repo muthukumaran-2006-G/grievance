@@ -1,0 +1,31 @@
+/* Roever Engineering College - Grievance Portal design tokens */
+:root {
+  --ledger-950: #101a2e;
+  --ledger-900: #16233d;
+  --ledger-800: #1f2f4d;
+  --ledger-700: #2c4267;
+  --ledger-100: #eef1f7;
+  --paper: #f6f4ee;
+  --paper-card: #fffdf8;
+  --brass: #b8863b;
+  --brass-dark: #93692a;
+  --brass-light: #e4c07f;
+  --ink-red: #a5372d;
+  --ink-green: #2f6b4f;
+  --ink-amber: #a5751f;
+  --ink-blue: #2c5282;
+  --ink-grey: #5b6478;
+  --border-soft: #e2ddd0;
+  --border-strong: #cbc3ac;
+  --text-primary: #1a2233;
+  --text-muted: #666f84;
+  --text-on-dark: #eef1f7;
+  --font-display: "Source Serif 4", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  --radius-sm: 5px;
+  --radius-md: 9px;
+  --radius-lg: 14px;
+  --shadow-card: 0 1px 2px rgba(16, 26, 46, 0.06), 0 8px 24px -12px rgba(16, 26, 46, 0.18);
+  --shadow-pop: 0 12px 32px -8px rgba(16, 26, 46, 0.28);
+}

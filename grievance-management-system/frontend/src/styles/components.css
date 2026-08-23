@@ -1,0 +1,88 @@
+.card {
+  background: var(--paper-card); border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
+}
+.stat-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px; margin-bottom: 26px;
+}
+.stat-card {
+  background: var(--paper-card); border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md); padding: 18px 18px 16px; position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content: ""; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+  background: var(--accent, var(--brass));
+}
+.stat-card-label {
+  font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-muted); font-weight: 600; margin-bottom: 8px;
+}
+.stat-card-value { font-family: var(--font-display); font-size: 30px; font-weight: 700; color: var(--text-primary); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 18px; border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600;
+  border: 1px solid transparent; transition: all 0.15s ease; white-space: nowrap;
+}
+.btn-primary { background: var(--ledger-950); color: #fff; }
+.btn-primary:hover { background: var(--ledger-800); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-accent { background: var(--brass); color: #23180a; }
+.btn-accent:hover { background: var(--brass-dark); color: #fff; }
+.btn-outline { background: transparent; border-color: var(--border-strong); color: var(--text-primary); }
+.btn-outline:hover { border-color: var(--ledger-800); background: var(--ledger-100); }
+.btn-danger-outline { background: transparent; border-color: var(--ink-red); color: var(--ink-red); }
+.btn-danger-outline:hover { background: rgba(165, 55, 45, 0.08); }
+.btn-sm { padding: 7px 12px; font-size: 12.5px; }
+.btn-full { width: 100%; }
+
+.field-group { margin-bottom: 18px; }
+.field-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 7px; }
+.field-label .optional { color: var(--text-muted); font-weight: 400; text-transform: none; }
+.field-input, .field-select, .field-textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm); background: #fff; color: var(--text-primary);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+  border-color: var(--brass); box-shadow: 0 0 0 3px rgba(184, 134, 59, 0.15); outline: none;
+}
+.field-textarea { resize: vertical; min-height: 120px; line-height: 1.55; }
+.field-error { color: var(--ink-red); font-size: 12px; margin-top: 6px; }
+.field-hint { color: var(--text-muted); font-size: 12px; margin-top: 6px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .field-row { grid-template-columns: 1fr; } }
+
+.radio-card-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.radio-card {
+  border: 1.5px solid var(--border-strong); border-radius: var(--radius-md);
+  padding: 14px; cursor: pointer; transition: all 0.15s ease; background: #fff;
+}
+.radio-card.selected {
+  border-color: var(--brass); background: rgba(184, 134, 59, 0.06); box-shadow: 0 0 0 1px var(--brass);
+}
+.radio-card-title { font-weight: 600; font-size: 13.5px; margin-bottom: 3px; }
+.radio-card-desc { font-size: 12px; color: var(--text-muted); }
+
+.status-stamp {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 11px 4px 9px; border: 1.5px solid currentColor; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; transform: rotate(-1.2deg); white-space: nowrap;
+}
+.status-stamp.pending { color: var(--ink-grey); }
+.status-stamp.under-review { color: var(--ink-blue); }
+.status-stamp.in-progress { color: var(--ink-amber); }
+.status-stamp.resolved { color: var(--ink-green); }
+.status-stamp.rejected { color: var(--ink-red); }
+
+.priority-tag {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600;
+  padding: 3px 9px; border-radius: 20px;
+}
+.priority-tag.low { background: #eef1f7; color: var(--ink-grey); }
+.priority-tag.medium { background: #eaf1fb; color: var(--ink-blue); }
+.priority-tag.high { background: #fbf0dd; color: var(--ink-amber); }
+.priority-tag.critical { background: #f9e6e3; color: var(--ink-red); }
+.priority-tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
